@@ -32,6 +32,7 @@ class Users(Base):
     username = db.Column("username", db.String)
     password = db.Column("password", db.String)
     email = db.Column("email", db.String)
+    chat_id = db.Column("chat_id", db.BigInteger)
     created_at = db.Column(TIMESTAMP, default=datetime.utcnow())
     is_verified = db.Column("is_verified", db.Boolean, default=False)
     tasks = relationship("Tasks", back_populates="creator")
