@@ -12,6 +12,9 @@ psycopg2 = "*"
 sqlalchemy = "*"
 alembic = "*"
 python-dotenv = "*"
+passlib = "*"
+asyncpg = "*"
+bcrypt = "*"
 
 [dev-packages]
 

@@ -4,6 +4,8 @@ import os
 import dotenv
 from pathlib import Path
 
+from app.settings.state import UserState
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 dotenv_file = os.path.join(BASE_DIR, ".env")
@@ -18,6 +20,9 @@ if os.path.isfile(dotenv_file):
 api_host = os.environ["APP_HOST"]
 api_id = os.environ["APP_ID"]
 bot_token = os.environ["BOT_TOKEN"]
+user_state = UserState()
+user_registration = dict()
+user_login = dict()
 
 # bd_settings
 host = os.environ['HOST']
