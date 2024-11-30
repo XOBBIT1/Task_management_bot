@@ -1,7 +1,7 @@
 from pyrogram import enums
 
 from app.core.keyboards.auth_keyboard import denied_keyboard
-from app.enums.auth import RegistrationStates
+from app.enums.auth import RegistrationStates, LoginStates
 from app.settings.config_settings import user_state
 
 
@@ -16,4 +16,9 @@ async def registration_callback(client, callback_query):
 
 
 async def login_callback(client, callback_query):
-    await callback_query.message.reply("Вы нажали Войти")
+    user_id = callback_query.from_user.id
+    user_state.set_state(user_id, LoginStates.WAITING_FOR_LOGING_EMAIL)
+    await callback_query.message.reply(
+        "Введите <b>Вашу почту</b> ✍️\n\n",
+        parse_mode=enums.ParseMode.HTML, reply_markup=denied_keyboard()
+    )
