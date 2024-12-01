@@ -23,6 +23,22 @@ class Tasks(Base):
     creator_id = db.Column(db.BigInteger, db.ForeignKey("Users.id"))  # Внешний ключ, связывающий задачу с пользователем
     creator = relationship("Users", back_populates="tasks")  # Отношение к пользователю
 
+    @property
+    def readable_status(self):
+        return {
+            TaskStatus.NEW: "Новая",
+            TaskStatus.IN_PROGRESS: "В процессе",
+            TaskStatus.COMPLETED: "Завершена"
+        }.get(self.status, "Неизвестный статус")
+
+    @property
+    def readable_priority(self):
+        return {
+            TaskPriority.LOW: "Низкий",
+            TaskPriority.MIDDLE: "Средний",
+            TaskPriority.HIGH: "Высокий"
+        }.get(self.priority, "Неизвестный приоритет")
+
 
 class Users(Base):
     __tablename__ = "Users"

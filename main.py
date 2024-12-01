@@ -4,6 +4,8 @@ from pyrogram import Client, filters
 
 from app.core.callbacks.auth_callback import registration_callback, login_callback
 from app.core.callbacks.logout_callback import logout_callback
+from app.core.callbacks.task_callbacks.create_task_callback import create_task_callback
+from app.core.callbacks.task_callbacks.task_callback import tasks_main_menu_callback, get_all_tasks_callback
 from app.core.callbacks.user_calback import user_profile_callback, update_user_name_callback, update_user_email_callback
 from app.core.commands.manager_commands import commands_manager
 from app.core.commands.auth.registration_commands import start_command
@@ -67,6 +69,22 @@ async def update_user_name_callback_handler(client, callback_query):
 @app.on_callback_query(dynamic_data_filter("change_email"))
 async def update_user_email_callback_handler(client, callback_query):
     await update_user_email_callback(client, callback_query)
+
+
+# CALLBACKS/task
+@app.on_callback_query(dynamic_data_filter("tasks_management"))
+async def tasks_main_menu_callback_handler(client, callback_query):
+    await tasks_main_menu_callback(client, callback_query)
+
+
+@app.on_callback_query(dynamic_data_filter("create_task"))
+async def create_task_callback_handler(client, callback_query):
+    await create_task_callback(client, callback_query)
+
+
+@app.on_callback_query(dynamic_data_filter("my_tasks"))
+async def all_task_callback_handler(client, callback_query):
+    await get_all_tasks_callback(client, callback_query)
 
 
 @app.on_callback_query(dynamic_data_filter("back"))

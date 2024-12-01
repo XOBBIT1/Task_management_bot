@@ -12,3 +12,8 @@ class TaskPriority(BaseEnum):
     LOW = "Низкий"
     MIDDLE = "Средний"
     HIGH = "Высокий"
+
+
+class UserTasksStates(BaseEnum):
+    WAITING_FOR_TASK_NAME = "waiting_for_task_name"
+    WAITING_FOR_TASK_DESCRIPTION = "waiting_for_task_description"

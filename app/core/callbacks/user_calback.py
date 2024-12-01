@@ -28,20 +28,36 @@ async def user_profile_callback(client, callback_query):
 
 
 async def update_user_name_callback(client, callback_query):
-    user_id = callback_query.from_user.id
-    user_state.set_state(user_id, UpdateUserStates.WAITING_FOR_UPDATE_NAME)
-    await callback_query.message.reply(
-        "Введите <b>Ваше НОВОЕ имя</b> ✍️\n\n"
-        "Пример: <i>Иван</i> ",
-        parse_mode=enums.ParseMode.HTML, reply_markup=denied_keyboard()
-    )
+    user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
+    if user:
+        user_id = callback_query.from_user.id
+        user_state.set_state(user_id, UpdateUserStates.WAITING_FOR_UPDATE_NAME)
+        await callback_query.message.reply(
+            "Введите <b>Ваше НОВОЕ имя</b> ✍️\n\n"
+            "Пример: <i>Иван</i> ",
+            parse_mode=enums.ParseMode.HTML, reply_markup=denied_keyboard()
+        )
+    else:
+        await callback_query.message.reply(
+            "🔴\n\n"
+            "<b>Вы не вошли в систему!</b>\n\n"
+            "Для этого <b><i>зарегистрируйтесь или войдите</i></b> в <b>СИСТЕМУ</b>",
+            parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
 async def update_user_email_callback(client, callback_query):
-    user_id = callback_query.from_user.id
-    user_state.set_state(user_id, UpdateUserStates.WAITING_FOR_UPDATE_EMAIL)
-    await callback_query.message.reply(
-        "Введите <b>Вашу НОВУЮ почту</b> 📩\n\n"
-        "Пример: <i>example@mail.com</i>",
-        parse_mode=enums.ParseMode.HTML, reply_markup=denied_keyboard()
-    )
+    user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
+    if user:
+        user_id = callback_query.from_user.id
+        user_state.set_state(user_id, UpdateUserStates.WAITING_FOR_UPDATE_EMAIL)
+        await callback_query.message.reply(
+            "Введите <b>Вашу НОВУЮ почту</b> 📩\n\n"
+            "Пример: <i>example@mail.com</i>",
+            parse_mode=enums.ParseMode.HTML, reply_markup=denied_keyboard()
+        )
+    else:
+        await callback_query.message.reply(
+            "🔴\n\n"
+            "<b>Вы не вошли в систему!</b>\n\n"
+            "Для этого <b><i>зарегистрируйтесь или войдите</i></b> в <b>СИСТЕМУ</b>",
+            parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())

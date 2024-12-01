@@ -24,6 +24,7 @@ user_state = UserState()
 user_registration = dict()
 user_update = dict()
 user_login = dict()
+create_task = dict()
 
 # bd_settings
 host = os.environ['HOST']
