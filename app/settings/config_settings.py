@@ -22,6 +22,7 @@ api_id = os.environ["APP_ID"]
 bot_token = os.environ["BOT_TOKEN"]
 user_state = UserState()
 user_registration = dict()
+user_update = dict()
 user_login = dict()
 
 # bd_settings

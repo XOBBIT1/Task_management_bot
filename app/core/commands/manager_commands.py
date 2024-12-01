@@ -1,11 +1,13 @@
 from app.core.commands.auth.login_commands import loging_get_email, loging_get_password
 from app.core.commands.auth.registration_commands import registration_get_name, registration_get_email, \
     registration_get_password
+from app.core.commands.user_commands import user_update_name, user_update_email
 from app.enums.auth import RegistrationStates, LoginStates
+from app.enums.user import UpdateUserStates
 from app.settings.config_settings import user_state
 
 
-async def start_auth(client, message):
+async def commands_manager(client, message):
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
     if state == RegistrationStates.WAITING_FOR_NAME:
@@ -18,3 +20,7 @@ async def start_auth(client, message):
         await loging_get_email(client, message)
     elif state == LoginStates.WAITING_FOR_LOGING_PASSWORD:
         await loging_get_password(client, message)
+    elif state == UpdateUserStates.WAITING_FOR_UPDATE_NAME:
+        await user_update_name(client, message)
+    elif state == UpdateUserStates.WAITING_FOR_UPDATE_EMAIL:
+        await user_update_email(client, message)
