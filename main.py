@@ -4,7 +4,8 @@ from pyrogram import Client, filters
 
 from app.core.callbacks.auth_callback import registration_callback, login_callback
 from app.core.callbacks.logout_callback import logout_callback
-from app.core.commands.auth.auth_command import start_auth
+from app.core.callbacks.user_calback import user_profile_callback, update_user_name_callback, update_user_email_callback
+from app.core.commands.manager_commands import commands_manager
 from app.core.commands.auth.registration_commands import start_command
 from app.core.filters.base_filter import dynamic_data_filter
 from app.settings import logging_settings
@@ -29,8 +30,8 @@ async def start_handler(client, message):
 
 # COMMANDS/registration
 @app.on_message(filters.private)
-async def registration_handler(client, message):
-    await start_auth(client, message)
+async def commands_manager_handler(client, message):
+    await commands_manager(client, message)
 
 
 # CALLBACKS
@@ -50,6 +51,22 @@ async def login_callback_handler(client, callback_query):
 @app.on_callback_query(dynamic_data_filter("logout"))
 async def logout_callback_handler(client, callback_query):
     await logout_callback(client, callback_query)
+
+
+# CALLBACKS/user
+@app.on_callback_query(dynamic_data_filter("my_profile"))
+async def user_profile_callback_handler(client, callback_query):
+    await user_profile_callback(client, callback_query)
+
+
+@app.on_callback_query(dynamic_data_filter("change_name"))
+async def update_user_name_callback_handler(client, callback_query):
+    await update_user_name_callback(client, callback_query)
+
+
+@app.on_callback_query(dynamic_data_filter("change_email"))
+async def update_user_email_callback_handler(client, callback_query):
+    await update_user_email_callback(client, callback_query)
 
 
 @app.on_callback_query(dynamic_data_filter("back"))

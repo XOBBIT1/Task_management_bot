@@ -107,3 +107,22 @@ class UsersRepository:
                 logging.info(f"function: user_logout\n\n"
                              f" Failed to fiend user: {e}")
                 await session.rollback()  # Откат при ошибке
+
+    async def update_user(self, chat_id, user_data: dict):
+        async with self.db_session_manager.get_session() as session:
+            try:
+                user = await self.get_user_by_chat_id(chat_id)
+                if not user:
+                    raise Exception(f"User with such {chat_id} does not exist")
+                if user_data.get("name") is not None:
+                    user.name = user_data.get("name")
+                if user_data.get("email") is not None:
+                    user.email = user_data.get("email")
+                user = await session.merge(user)
+                await session.commit()  # Асинхронный коммит
+                await session.refresh(user)  # Обновление объекта с новыми данными из базы
+                return user
+            except Exception as e:
+                logging.info(f"function: update_user\n\n"
+                             f" Failed to fiend user: {e}")
+                await session.rollback()  # Откат при ошибке
