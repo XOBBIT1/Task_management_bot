@@ -28,15 +28,22 @@ async def get_all_tasks_callback(client, callback_query):
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     tasks = await TasksRepository().get_all_tasks()
     if user:
-        for task in tasks:
+        if tasks:
             await callback_query.message.reply(
-                "<b>Ваши задачи📋: </b>\n\n"
-                f"<b><i>Название: {task.task_name}</i></b>\n"
-                f"<i>Описсание: {task.task_descriptions}</i>\n"
-                f"<b><i>Статус: {task.readable_status}</i></b>\n"
-                f"<b><i>Преоритет: {task.readable_priority}</i></b>\n",
-                parse_mode=enums.ParseMode.HTML, reply_markup=all_tasks_keyboard()
-            )
+                "<b>ВАШИ ЗАДАЧИ 📋: </b>\n\n", parse_mode=enums.ParseMode.HTML)
+            for task in tasks:
+                await callback_query.message.reply(
+                    f"<b><i>Название: {task.task_name}</i></b>\n"
+                    f"<i>Описсание: {task.task_descriptions}</i>\n"
+                    f"<b><i>Статус: {task.readable_status}</i></b>\n"
+                    f"<b><i>Преоритет: {task.readable_priority}</i></b>\n",
+                    parse_mode=enums.ParseMode.HTML, reply_markup=all_tasks_keyboard(task.id)
+                )
+        else:
+            await callback_query.message.reply(
+                "<b>У вас пока нет задач 😥 </b>\n\n",
+                parse_mode=enums.ParseMode.HTML)
+            await tasks_main_menu_callback(client, callback_query)
     else:
         await callback_query.message.reply(
             "🔴\n\n"

@@ -26,9 +26,9 @@ class Tasks(Base):
     @property
     def readable_status(self):
         return {
-            TaskStatus.NEW: "Новая",
-            TaskStatus.IN_PROGRESS: "В процессе",
-            TaskStatus.COMPLETED: "Завершена"
+            TaskStatus.NEW: "Новая 🔴",
+            TaskStatus.INPROGRESS: "В процессе 🟡",
+            TaskStatus.COMPLETED: "Завершена 🟢"
         }.get(self.status, "Неизвестный статус")
 
     @property
