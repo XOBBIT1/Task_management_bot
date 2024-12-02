@@ -117,13 +117,14 @@ async def update_status_callback(client, callback_query):
 async def update_priority_callback(client, callback_query):
     priority = callback_query.data.split('_')[1]
     task_update["priority"] = priority
+    task_name = task_update["task_name"]
     updated_task = await TasksRepository().update_task(
         task_id=task_update["task_id"],
         task_update_data=task_update
     )
     if updated_task:
         await callback_query.message.reply(
-            f"<b>Задача {task_update["task_name"]} обновлена!</b>✅\n\n",
+            f"<b>Задача {task_name} обновлена!</b>✅\n\n",
             parse_mode=enums.ParseMode.HTML
         )
         await update_task_callback(client, callback_query)
