@@ -7,12 +7,13 @@ from app.settings.config_settings import task_update
 
 async def delete_task_callback(client, callback_query):
     task_id = callback_query.data.split('_')[2]
+    task_name = task_update["task_name"]
     updated_task = await TasksRepository().delete_task(
         task_id=int(task_id),
     )
     if updated_task:
         await callback_query.message.reply(
-            f"<b>Задача {task_update["task_name"]} успешно удалена!</b>✅\n\n",
+            f"<b>Задача {task_name} успешно удалена!</b>✅\n\n",
             parse_mode=enums.ParseMode.HTML
         )
         await tasks_main_menu_callback(client, callback_query)

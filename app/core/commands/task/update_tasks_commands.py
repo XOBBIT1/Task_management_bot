@@ -41,7 +41,7 @@ async def task_update_name_command(client, message):
         )
         if updated_task:
             await message.reply(
-                f"<b>Задача {task_update["task_name"]} обновлена!</b>✅\n\n",
+                f"<b>Задача {task_name} обновлена!</b>✅\n\n",
                 parse_mode=enums.ParseMode.HTML
             )
             await update_task_command(client, message)
@@ -50,6 +50,7 @@ async def task_update_name_command(client, message):
 async def task_update_description_command(client, message):
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
+    task_name = task_update["task_name"]
 
     if state == UserTasksStates.WAITING_FOR_TASK_UPDATE_DESCRIPTION:
         task_descriptions = message.text
@@ -60,7 +61,7 @@ async def task_update_description_command(client, message):
         )
         if updated_task:
             await message.reply(
-                f"<b>Задача {task_update["task_name"]} обновлена!</b>✅\n\n",
+                f"<b>Задача {task_name} обновлена!</b>✅\n\n",
                 parse_mode=enums.ParseMode.HTML
             )
             await update_task_command(client, message)
