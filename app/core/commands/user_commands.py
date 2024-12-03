@@ -1,4 +1,5 @@
-from pyrogram import enums
+from pyrogram import enums, Client
+from pyrogram.types import Message
 
 from app.core.keyboards.auth_keyboard import auth_keyboard
 from app.core.keyboards.user_keyboard import user_profile_keyboard
@@ -7,7 +8,19 @@ from app.enums.user import UpdateUserStates
 from app.settings.config_settings import user_state, user_update
 
 
-async def user_profile_command(client, message):
+async def user_profile_command(client: Client, message: Message):
+    """
+    Отображает профиль пользователя с его текущими данными, такими как имя и email.
+    Также предоставляет возможность обновить эти данные.
+
+    Аргументы:
+        client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+        message (Message): Сообщение от пользователя, вызвавшего команду.
+
+    Отправляет:
+        Сообщение с профилем пользователя и кнопками для изменения имени и почты.
+        В случае неавторизованного пользователя отправляется сообщение с просьбой войти в систему.
+    """
     user = await UsersRepository().user_is_verified(chat_id=message.chat.id)
     if user:
         await message.reply(
@@ -27,7 +40,17 @@ async def user_profile_command(client, message):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def user_update_name(client, message):
+async def user_update_name(client: Client, message: Message):
+    """
+   Обрабатывает команду для обновления имени пользователя. Сохраняет новое имя в базе данных.
+
+   Аргументы:
+       client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+       message (Message): Сообщение от пользователя, содержащее новое имя.
+
+   Отправляет:
+       Сообщение с подтверждением успешного обновления имени.
+   """
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
 
@@ -46,7 +69,17 @@ async def user_update_name(client, message):
             await user_profile_command(client, message)
 
 
-async def user_update_email(client, message):
+async def user_update_email(client: Client, message: Message):
+    """
+    Обрабатывает команду для обновления почты пользователя. Сохраняет новый email в базе данных.
+
+    Аргументы:
+        client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+        message (Message): Сообщение от пользователя, содержащее новый email.
+
+    Отправляет:
+        Сообщение с подтверждением успешного обновления почты.
+    """
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
 

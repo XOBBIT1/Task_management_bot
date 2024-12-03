@@ -15,6 +15,7 @@ python-dotenv = "*"
 passlib = "*"
 asyncpg = "*"
 bcrypt = "*"
+email-validator = "*"
 
 [dev-packages]
 

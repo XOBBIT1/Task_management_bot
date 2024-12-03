@@ -9,12 +9,36 @@ from app.settings.db.session_to_postgres import DBSessionManager
 
 
 class TasksRepository:
+    """
+   Репозиторий для работы с задачами.
+
+   Этот класс предоставляет методы для создания, получения, обновления и удаления задач.
+   Вся работа с данными происходит через асинхронный доступ к базе данных с использованием сессий.
+
+   Атрибуты:
+       db_session_manager (DBSessionManager): Менеджер сессий базы данных для работы с сессиями.
+   """
 
     def __init__(self):
+        """
+        Инициализация репозитория задач.
+
+        Создает экземпляр менеджера сессий базы данных для работы с задачами.
+        """
         self.db_session_manager = DBSessionManager()
         super().__init__()
 
     async def create_task(self, instance: dict, creator_id: int):
+        """
+           Создает новую задачу в базе данных.
+
+           Аргументы:
+               instance (dict): Словарь с данными для задачи, такими как название и описание.
+               creator_id (int): Идентификатор пользователя, который создает задачу.
+
+           Возвращает:
+               Tasks: Созданная задача.
+        """
         async with self.db_session_manager.get_session() as session:
             try:
                 new_task = Tasks(
@@ -32,6 +56,15 @@ class TasksRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def get_task_by_id(self, task_id: int):
+        """
+         Получает задачу по ее ID.
+
+         Аргументы:
+             task_id (int): Идентификатор задачи.
+
+         Возвращает:
+             Tasks или None: Задача с указанным ID, если она существует, иначе None.
+         """
         async with self.db_session_manager.get_session() as session:
             try:
                 query = select(Tasks).filter_by(id=task_id)
@@ -44,6 +77,12 @@ class TasksRepository:
                 return None
 
     async def get_all_tasks(self,):
+        """
+        Получает все задачи из базы данных.
+
+        Возвращает:
+            List[Tasks]: Список всех задач.
+        """
         async with self.db_session_manager.get_session() as session:
             try:
                 query = select(Tasks)
@@ -54,6 +93,16 @@ class TasksRepository:
                 raise Exception(f"User not found: {ex}")
 
     async def update_task(self, task_id: int, task_update_data):
+        """
+           Обновляет данные задачи по ее ID.
+
+           Аргументы:
+               task_id (int): Идентификатор задачи.
+               task_update_data (dict): Словарь с обновленными данными для задачи.
+
+           Возвращает:
+               Tasks или None: Обновленная задача, если она существует и обновление прошло успешно, иначе None.
+           """
         async with self.db_session_manager.get_session() as session:
             try:
                 print(task_update_data)
@@ -78,6 +127,15 @@ class TasksRepository:
                 return None
 
     async def delete_task(self, task_id: int):
+        """
+           Удаляет задачу по ее ID.
+
+           Аргументы:
+               task_id (int): Идентификатор задачи для удаления.
+
+           Возвращает:
+               Tasks или None: Удаленная задача, если она была найдена и удалена, иначе None.
+        """
         async with self.db_session_manager.get_session() as session:
             try:
                 query = select(Tasks).filter_by(id=task_id)

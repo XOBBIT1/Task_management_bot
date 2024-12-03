@@ -11,12 +11,35 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class UsersRepository:
+    """
+    Репозиторий для работы с пользователями.
+
+    Этот класс предоставляет методы для создания, получения, обновления и удаления пользователей.
+    Вся работа с данными происходит через асинхронный доступ к базе данных с использованием сессий.
+
+    Атрибуты:
+        db_session_manager (DBSessionManager): Менеджер сессий базы данных для работы с сессиями.
+    """
 
     def __init__(self):
+        """
+       Инициализация репозитория пользователей.
+
+       Создает экземпляр менеджера сессий базы данных для работы с пользователями.
+       """
         self.db_session_manager = DBSessionManager()
         super().__init__()
 
     async def create_user(self, instance: dict):
+        """
+      Создает нового пользователя в базе данных.
+
+      Аргументы:
+          instance (dict): Словарь с данными для пользователя, такими как имя, почта, и т. д.
+
+      Возвращает:
+          None: Успешно создает пользователя, логирует успех.
+      """
         async with self.db_session_manager.get_session() as session:
             try:
                 hashed_password = pwd_context.hash(instance.get("password"))
@@ -38,6 +61,15 @@ class UsersRepository:
                 await session.rollback()
 
     async def get_user_by_chat_id(self, chat_id):
+        """
+           Получает пользователя по его chat_id.
+
+           Аргументы:
+               chat_id (int): Идентификатор чата пользователя.
+
+           Возвращает:
+               Users или None: Пользователь с указанным chat_id, если он существует, иначе None.
+        """
         async with self.db_session_manager.get_session() as session:
             try:
                 query = select(Users).filter_by(chat_id=chat_id)
@@ -50,6 +82,15 @@ class UsersRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def get_user_by_email(self, email):
+        """
+        Получает пользователя по его email.
+
+        Аргументы:
+            email (str): Адрес электронной почты пользователя.
+
+        Возвращает:
+            Users или None: Пользователь с указанным email, если он существует, иначе None.
+        """
         async with self.db_session_manager.get_session() as session:
             try:
                 query = select(Users).filter_by(email=email)
@@ -62,6 +103,16 @@ class UsersRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def user_is_verified(self, chat_id):
+        """
+       Проверяет, прошел ли пользователь верификацию.
+
+       Аргументы:
+           chat_id (int): Идентификатор чата пользователя.
+
+       Возвращает:
+           Users: Если пользователь верифицирован, возвращает его данные.
+           Исключение: Если пользователь не верифицирован, выбрасывает исключение.
+       """
         async with self.db_session_manager.get_session() as session:
             try:
                 user = await self.get_user_by_chat_id(chat_id)
@@ -75,6 +126,17 @@ class UsersRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def verify_user(self, email, password):
+        """
+       Верифицирует пользователя по email и паролю.
+
+       Аргументы:
+           email (str): Адрес электронной почты пользователя.
+           password (str): Пароль пользователя.
+
+       Возвращает:
+           Users: Если верификация успешна, возвращает данные пользователя.
+           Исключение: Если пользователь не найден или пароль неверен, выбрасывает исключение.
+       """
         async with self.db_session_manager.get_session() as session:
             try:
                 user = await self.get_user_by_email(email)
@@ -93,6 +155,16 @@ class UsersRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def user_logout(self, chat_id):
+        """
+       Осуществляет выход пользователя из системы, снимая верификацию.
+
+       Аргументы:
+           chat_id (int): Идентификатор чата пользователя.
+
+       Возвращает:
+           Users: Обновленные данные пользователя.
+           Исключение: Если пользователь не найден, выбрасывает исключение.
+       """
         async with self.db_session_manager.get_session() as session:
             try:
                 user = await self.get_user_by_chat_id(chat_id)
@@ -109,6 +181,17 @@ class UsersRepository:
                 await session.rollback()  # Откат при ошибке
 
     async def update_user(self, chat_id, user_data: dict):
+        """
+       Обновляет данные пользователя.
+
+       Аргументы:
+           chat_id (int): Идентификатор чата пользователя.
+           user_data (dict): Словарь с данными для обновления (например, имя, email).
+
+       Возвращает:
+           Users: Обновленные данные пользователя.
+           Исключение: Если пользователь не найден, выбрасывает исключение.
+       """
         async with self.db_session_manager.get_session() as session:
             try:
                 user = await self.get_user_by_chat_id(chat_id)

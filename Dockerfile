@@ -1,22 +1,21 @@
-# Используем базовый образ Python
+# Используем официальный образ Python
 FROM python:3.12
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Устанавливаем необходимые пакеты, включая netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы requirements.txt и устанавливаем зависимости
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Копируем файлы проекта в контейнер
+COPY . .
 
-# Копируем исходный код приложения
-COPY .. .
+# Устанавливаем зависимости через pipenv
+RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 
-# Делаем entrypoint.sh исполняемым
-COPY ./entrypoint.sh /entrypoint.sh
+# Копируем и делаем исполнимым файл entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Указываем ENTRYPOINT
+# Указываем точку входа в контейнер
 ENTRYPOINT ["/entrypoint.sh"]
-
-# Команда запуска uvicorn-сервера
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

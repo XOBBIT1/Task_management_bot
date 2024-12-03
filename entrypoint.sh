@@ -1,20 +1,15 @@
 #!/bin/bash
-set -e
 
-# Проверка доступности базы данных перед запуском приложения
-if [ "$DATABASE" = "postgres" ]; then
-    echo "Waiting for PostgreSQL..."
+# Ожидание доступности базы данных перед запуском приложения
+echo "Waiting for the database to be ready..."
+while ! nc -z db 5432; do
+  echo "Waiting for PostgreSQL connection..."
+  sleep 1
+done
 
-    while ! nc -z $SQL_HOST $SQL_PORT; do
-        sleep 0.1
-    done
+# Активируем виртуальное окружение pipenv и запускаем бота
+echo "Database is ready, starting the bot..."
+pipenv run python /app/main.py  # Убедитесь, что путь к вашему файлу правильный
 
-    echo "PostgreSQL started"
-fi
-
-# Пример миграции для SQLAlchemy (если они требуются)
-# echo "Running migrations..."
-# alembic upgrade head
-
-# Запуск uvicorn-сервера
-exec "$@"
+# Ожидаем, чтобы контейнер продолжал работать после завершения бота
+tail -f /dev/null

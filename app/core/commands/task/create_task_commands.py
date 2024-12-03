@@ -1,4 +1,5 @@
-from pyrogram import enums
+from pyrogram import enums, Client
+from pyrogram.types import Message
 
 from app.core.keyboards.auth_keyboard import denied_keyboard, auth_keyboard
 from app.core.keyboards.task_keyboard import user_tasks_keyboard
@@ -8,7 +9,19 @@ from app.enums.tasks import UserTasksStates
 from app.settings.config_settings import create_task, user_state
 
 
-async def tasks_main_menu_command(client, message):
+async def tasks_main_menu_command(client: Client, message: Message):
+    """
+      Обрабатывает команду главного меню задач. Отправляет пользователю меню с возможностями управления задачами,
+      если пользователь вошел в систему.
+
+      Аргументы:
+          client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+          message (Message): Сообщение от пользователя, вызвавшего команду.
+
+      Отправляет:
+          Сообщение с меню задач, если пользователь авторизован.
+          В противном случае отправляется сообщение с просьбой войти в систему.
+    """
     user = await UsersRepository().user_is_verified(chat_id=message.chat.id)
     if user:
         await message.reply(
@@ -26,7 +39,17 @@ async def tasks_main_menu_command(client, message):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def get_task_name_command(client, message):
+async def get_task_name_command(client: Client, message: Message):
+    """
+       Обрабатывает команду ввода названия задачи. Сохраняет название задачи и запрашивает описание.
+
+       Аргументы:
+           client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+           message (Message): Сообщение пользователя, содержащее название задачи.
+
+       Отправляет:
+           Сообщение с запросом на описание задачи.
+    """
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
 
@@ -42,7 +65,17 @@ async def get_task_name_command(client, message):
         )
 
 
-async def create_task_command(client, message):
+async def create_task_command(client: Client, message: Message):
+    """
+    Обрабатывает команду создания задачи. Сохраняет описание задачи и создает задачу в базе данных.
+
+    Аргументы:
+        client (Client): Экземпляр клиента Pyrogram, используемый для отправки сообщений.
+        message (Message): Сообщение пользователя, содержащее описание задачи.
+
+    Отправляет:
+        Сообщение с подтверждением успешного создания задачи.
+    """
     user = await UsersRepository().user_is_verified(chat_id=message.chat.id)
     user_id = message.from_user.id
     state = user_state.get_state(user_id)
