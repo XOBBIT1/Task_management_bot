@@ -1,4 +1,4 @@
-from pyrogram import enums
+from pyrogram import enums, Client, types
 
 from app.core.keyboards.auth_keyboard import auth_keyboard, denied_keyboard
 from app.core.keyboards.task_keyboard import update_task_keyboard, update_task_status_keyboard, \
@@ -9,7 +9,16 @@ from app.enums.tasks import UserTasksStates
 from app.settings.config_settings import user_state, task_update
 
 
-async def update_task_callback(client, callback_query):
+async def update_task_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает запрос на обновление задачи. Если пользователь авторизован, показывает меню с текущими данными
+    задачи и возможностью выбрать, что именно нужно изменить (название, описание, статус, приоритет). Если
+    пользователь не авторизован, предлагается зарегистрироваться или войти в систему.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     task_id = callback_query.data.split('_')[2]
     task_update["task_id"] = int(task_id)
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
@@ -32,7 +41,15 @@ async def update_task_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_name_task_callback(client, callback_query):
+async def update_name_task_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает запрос на обновление названия задачи. Если пользователь авторизован, переводит его в состояние
+    ожидания нового имени задачи. Если пользователь не авторизован, предлагается зарегистрироваться или войти в систему.
+
+        Args:
+            client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+            callback_query: Объект callback-запроса, инициированный пользователем.
+        """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         user_id = callback_query.from_user.id
@@ -50,7 +67,15 @@ async def update_name_task_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_desc_task_callback(client, callback_query):
+async def update_desc_task_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает запрос на обновление описания задачи. Если пользователь авторизован, переводит его в состояние ожидания
+    нового описания задачи. Если пользователь не авторизован, предлагается зарегистрироваться или войти в систему.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         user_id = callback_query.from_user.id
@@ -68,7 +93,15 @@ async def update_desc_task_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_status_task_callback(client, callback_query):
+async def update_status_task_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает запрос на обновление статуса задачи. Если пользователь авторизован, показывает меню с возможными
+    статусами для задачи. Если пользователь не авторизован, предлагается зарегистрироваться или войти в систему.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         await callback_query.message.reply(
@@ -83,7 +116,15 @@ async def update_status_task_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_priority_task_callback(client, callback_query):
+async def update_priority_task_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает запрос на обновление приоритета задачи. Если пользователь авторизован, показывает меню с возможными
+    приоритетами для задачи. Если пользователь не авторизован, предлагается зарегистрироваться или войти в систему.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         await callback_query.message.reply(
@@ -98,7 +139,15 @@ async def update_priority_task_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_status_callback(client, callback_query):
+async def update_status_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает обновление статуса задачи. После успешного обновления статус задачи сохраняется, и пользователю
+    отправляется уведомление о завершении обновления.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     status = callback_query.data.split('_')[1]
     task_update["status"] = status
     task_name = task_update["task_name"]
@@ -114,7 +163,15 @@ async def update_status_callback(client, callback_query):
         await update_task_callback(client, callback_query)
 
 
-async def update_priority_callback(client, callback_query):
+async def update_priority_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает обновление приоритета задачи. После успешного обновления приоритет задачи сохраняется, и пользователю отправляется
+    уведомление о завершении обновления.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     priority = callback_query.data.split('_')[1]
     task_update["priority"] = priority
     task_name = task_update["task_name"]

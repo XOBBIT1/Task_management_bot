@@ -1,4 +1,4 @@
-from pyrogram import enums
+from pyrogram import enums, Client, types
 
 from app.core.keyboards.auth_keyboard import denied_keyboard, auth_keyboard
 from app.core.keyboards.user_keyboard import user_profile_keyboard
@@ -7,7 +7,18 @@ from app.enums.user import UpdateUserStates
 from app.settings.config_settings import user_state
 
 
-async def user_profile_callback(client, callback_query):
+async def user_profile_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+   Обрабатывает callback-запрос для отображения профиля пользователя.
+
+   Если пользователь авторизован, отправляет сообщение с информацией о профиле, включая имя и почту,
+   а также предоставляет возможности для изменения этих данных. Если пользователь не авторизован,
+   предлагает зарегистрироваться или войти в систему.
+
+   Args:
+       client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+       callback_query: Объект callback-запроса, инициированный пользователем.
+   """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         await callback_query.message.reply(
@@ -27,7 +38,18 @@ async def user_profile_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_user_name_callback(client, callback_query):
+async def update_user_name_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает callback-запрос для изменения имени пользователя.
+
+    Если пользователь авторизован, переводит его в состояние ожидания ввода нового имени
+    и отправляет соответствующее сообщение. Если пользователь не авторизован, предлагает
+    зарегистрироваться или войти в систему.
+
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         user_id = callback_query.from_user.id
@@ -45,7 +67,18 @@ async def update_user_name_callback(client, callback_query):
             parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
 
 
-async def update_user_email_callback(client, callback_query):
+async def update_user_email_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+   Обрабатывает callback-запрос для изменения почты пользователя.
+
+   Если пользователь авторизован, переводит его в состояние ожидания ввода новой почты
+   и отправляет соответствующее сообщение. Если пользователь не авторизован, предлагает
+   зарегистрироваться или войти в систему.
+
+   Args:
+       client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+       callback_query: Объект callback-запроса, инициированный пользователем.
+   """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     if user:
         user_id = callback_query.from_user.id

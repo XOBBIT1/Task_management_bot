@@ -12,5 +12,22 @@ services:
     ports:
       - '5432:5432'
 
+  bot:
+    container_name: tm_bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_NAME=tmb_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+    depends_on:
+      - db
+    ports:
+      - '8000:8000'
+
 volumes:
   postgres_data:

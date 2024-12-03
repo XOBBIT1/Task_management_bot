@@ -1,30 +1,24 @@
-from pyrogram import enums
+from pyrogram import enums, Client, types
 
+from app.core.callbacks.task_callbacks.main_menu_callback import tasks_main_menu_callback
 from app.core.keyboards.auth_keyboard import auth_keyboard
-from app.core.keyboards.task_keyboard import user_tasks_keyboard, all_tasks_keyboard
+from app.core.keyboards.task_keyboard import all_tasks_keyboard
 from app.core.repositories.tasks import TasksRepository
 from app.core.repositories.users import UsersRepository
 
 
-async def tasks_main_menu_callback(client, callback_query):
-    user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
-    if user:
-        await callback_query.message.reply(
-            "<b>Меню ЗАДАЧ 📋</b>\n\n"
-            "Здесь Вы можете:\n"
-            "🖋🖌🖍 <i>Создавать и управлять задачами.\n</i>"
-            "📊 <i>Отслеживайть прогресс выполнения задач.\n</i>",
-            parse_mode=enums.ParseMode.HTML, reply_markup=user_tasks_keyboard()
-        )
-    else:
-        await callback_query.message.reply(
-            "🔴\n\n"
-            "<b>Вы не вошли в систему!</b>\n\n"
-            "Для этого <b><i>зарегистрируйтесь или войдите</i></b> в <b>СИСТЕМУ</b>",
-            parse_mode=enums.ParseMode.HTML, reply_markup=auth_keyboard())
+async def get_all_tasks_callback(client: Client, callback_query: types.CallbackQuery):
+    """
+    Обрабатывает callback-запрос для отображения всех задач пользователя.
 
+    Если пользователь авторизован, извлекает список всех задач и отправляет их в виде сообщений.
+    Если задач нет, уведомляет пользователя и перенаправляет его в главное меню задач. Если
+    пользователь не авторизован, предлагает зарегистрироваться или войти в систему.
 
-async def get_all_tasks_callback(client, callback_query):
+    Args:
+        client (Client): Клиент Pyrogram для взаимодействия с Telegram API.
+        callback_query: Объект callback-запроса, инициированный пользователем.
+    """
     user = await UsersRepository().user_is_verified(chat_id=callback_query.message.chat.id)
     tasks = await TasksRepository().get_all_tasks()
     if user:

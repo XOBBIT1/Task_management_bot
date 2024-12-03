@@ -4,6 +4,8 @@ import os
 import dotenv
 from pathlib import Path
 
+from pyrogram import Client
+
 from app.settings.state import UserState
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +28,13 @@ user_update = dict()
 user_login = dict()
 create_task = dict()
 task_update = dict()
+
+app_client = Client(
+    "tma_bot",  # Имя сессии
+    api_id=api_id,
+    api_hash=api_host,
+    bot_token=bot_token
+)
 
 
 # bd_settings

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c400babfb1fecf9c2481bd62e6aa72ae7f669af6e1f91473dab43cee7419c937"
+            "sha256": "9cb5ebed0275a88eb097bbf541d245e92b734b696e65a2a3a625110ebb9f11d8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -137,6 +137,23 @@
             ],
             "version": "==0.3.9"
         },
+        "dnspython": {
+            "hashes": [
+                "sha256:b4c34b7d10b51bcc3a5071e7b8dee77939f1e878477eeecc965e9835f63c6c86",
+                "sha256:ce9c432eda0dc91cf618a5cedf1a4e142651196bbcd2c80e89ed5a907e5cfaf1"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==2.7.0"
+        },
+        "email-validator": {
+            "hashes": [
+                "sha256:561977c2d73ce3611850a06fa56b414621e0c8faa9d66f2611407d87465da631",
+                "sha256:cb690f344c617a714f22e66ae771445a1ceb46821152df8e165c5f9a364582b7"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==2.2.0"
+        },
         "filelock": {
             "hashes": [
                 "sha256:2082e5703d51fbf98ea75855d9d5527e33d8ff23099bec374a134febee6946b0",
@@ -240,6 +257,14 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==2.6.3"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9",
+                "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==3.10"
         },
         "mako": {
             "hashes": [
