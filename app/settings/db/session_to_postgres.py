@@ -1,3 +1,5 @@
+from sqlalchemy import text
+
 from app.settings import config_settings
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -42,3 +44,15 @@ class DBSessionManager:
 
     def get_session(self):
         return self.SessionContextManager(self._AsyncSession)
+
+    async def execute_raw_sql(self, query: str, params: dict = None):
+        """
+        Выполняет произвольный SQL-запрос и возвращает результат.
+
+        :param query: SQL-запрос в виде строки.
+        :param params: Параметры для подстановки в запрос (по умолчанию None).
+        :return: Результат выполнения запроса.
+        """
+        async with self.get_session() as session:
+            result = await session.execute(text(query), params or {})
+            return result.fetchall()

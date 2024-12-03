@@ -38,6 +38,10 @@ class TasksRepository:
 
            Возвращает:
                Tasks: Созданная задача.
+           SQL запрос:
+                INSERT INTO tasks (task_name, task_descriptions, creator_id, created_at)
+                VALUES (:task_name, :task_descriptions, :creator_id, :created_at)
+                RETURNING id, task_name, task_descriptions, creator_id, created_at
         """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -64,6 +68,8 @@ class TasksRepository:
 
          Возвращает:
              Tasks или None: Задача с указанным ID, если она существует, иначе None.
+         SQL запрос:
+             "SELECT * FROM tasks WHERE id = :task_id"
          """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -82,6 +88,8 @@ class TasksRepository:
 
         Возвращает:
             List[Tasks]: Список всех задач.
+        SQL запрос:
+            "SELECT * FROM tasks"
         """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -102,6 +110,8 @@ class TasksRepository:
 
            Возвращает:
                Tasks или None: Обновленная задача, если она существует и обновление прошло успешно, иначе None.
+           SQL запрос:
+              "UPDATE tasks SET priority = :priority WHERE id = :task_id"
            """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -135,6 +145,9 @@ class TasksRepository:
 
            Возвращает:
                Tasks или None: Удаленная задача, если она была найдена и удалена, иначе None.
+
+           SQL запрос:
+            "DELETE FROM tasks WHERE id = :task_id"
         """
         async with self.db_session_manager.get_session() as session:
             try:
