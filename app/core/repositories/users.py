@@ -39,6 +39,10 @@ class UsersRepository:
 
       Возвращает:
           None: Успешно создает пользователя, логирует успех.
+      SQL запрос:
+            INSERT INTO users (name, username, password, email, chat_id, created_at)
+            VALUES (:name, :username, :password, :email, :chat_id, :created_at)
+            RETURNING id, name, username, email, chat_id, created_at
       """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -69,6 +73,11 @@ class UsersRepository:
 
            Возвращает:
                Users или None: Пользователь с указанным chat_id, если он существует, иначе None.
+           SQL запрос:
+                SELECT id, name, username, email, chat_id, created_at
+                FROM users
+                WHERE chat_id = :chat_id
+                LIMIT 1
         """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -90,6 +99,11 @@ class UsersRepository:
 
         Возвращает:
             Users или None: Пользователь с указанным email, если он существует, иначе None.
+        SQL запрос:
+                SELECT id, name, username, email, chat_id, created_at
+                FROM users
+                WHERE email = :email
+                LIMIT 1
         """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -112,6 +126,11 @@ class UsersRepository:
        Возвращает:
            Users: Если пользователь верифицирован, возвращает его данные.
            Исключение: Если пользователь не верифицирован, выбрасывает исключение.
+       SQL запрос:
+            SELECT id, name, username, email, chat_id, created_at, is_verified
+            FROM users
+            WHERE chat_id = :chat_id
+            LIMIT 1
        """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -136,6 +155,17 @@ class UsersRepository:
        Возвращает:
            Users: Если верификация успешна, возвращает данные пользователя.
            Исключение: Если пользователь не найден или пароль неверен, выбрасывает исключение.
+        SQL запрос:
+            SELECT id, name, username, email, password, chat_id, created_at, is_verified
+            FROM users
+            WHERE email = :email
+            LIMIT 1
+
+
+            UPDATE users
+            SET is_verified = TRUE
+            WHERE id = :user_id
+            RETURNING id, name, username, email, chat_id, created_at, is_verified
        """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -164,6 +194,16 @@ class UsersRepository:
        Возвращает:
            Users: Обновленные данные пользователя.
            Исключение: Если пользователь не найден, выбрасывает исключение.
+       SQL запрос:
+                UPDATE users
+                SET is_verified = FALSE
+                WHERE id = :user_id
+                RETURNING id, name, username, email, chat_id, created_at, is_verified
+
+                UPDATE users
+                SET is_verified = FALSE
+                WHERE id = :user_id
+                RETURNING id, name, username, email, chat_id, created_at, is_verified
        """
         async with self.db_session_manager.get_session() as session:
             try:
@@ -191,6 +231,16 @@ class UsersRepository:
        Возвращает:
            Users: Обновленные данные пользователя.
            Исключение: Если пользователь не найден, выбрасывает исключение.
+       SQL запрос:
+                SELECT id, name, username, email, chat_id, created_at
+                FROM users
+                WHERE chat_id = :chat_id
+                LIMIT 1
+
+                UPDATE users
+                SET name = :name, email = :email
+                WHERE id = :user_id
+                RETURNING id, name, username, email, chat_id, created_at
        """
         async with self.db_session_manager.get_session() as session:
             try:
