@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=tmb_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - '5432:5432'
+
+  bot:
+    container_name: tm_bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_NAME=tmb_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+    depends_on:
+      - db
+    ports:
+      - '8000:8000'
+
+volumes:
+  postgres_data:
